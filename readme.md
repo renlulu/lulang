@@ -4,8 +4,8 @@ Just for fun!
 
 #### TODO List
 
-[ ] lexer
-[ ] parser
-[ ] evaluation
-[ ] compilation
-[ ] use `chan` to improve performance
+* [ ] lexer
+* [ ] parser
+* [ ] evaluation
+* [ ] compilation
+* [ ] use `chan` to improve performance
