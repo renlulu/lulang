@@ -18,19 +18,19 @@ Definition of Abstract Syntax Tree.
 
 ##### lexer
 
-Lexer that scan input string to produce *Token*.
+Lexer that scan input string to produce `Token`.
 
 ##### Parser
 
-Parser consumes `Token` and produce AST.
+Parser consumes `Token` and produces AST.
 
 ##### repl
 
-A simple interactive environment of lulang.
+A simple interactive environment of `lulang`.
 
 ##### token
 
-Basic unit of lulang.
+Basic unit of `lulang`.
 
 #### Some notes (terminology) about the parser
 
