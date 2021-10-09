@@ -4,7 +4,7 @@ Just for fun!
 
 #### TODO List
 
-* [ ] lexer
+* [x] lexer
 * [ ] parser
 * [ ] evaluation
 * [ ] compilation
