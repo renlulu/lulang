@@ -5,8 +5,11 @@ import (
 	"lulang/ast"
 	"lulang/lexer"
 	"lulang/token"
+	"strconv"
 )
 
+// define precedence
+// does the * operator have a higher precedence than the == operator?
 const (
 	_ int = iota
 	LOWEST
@@ -19,8 +22,10 @@ const (
 )
 
 type (
+	// a prefix operator doesn't have a left side, so there is no argument for this function
 	prefixParseFn func() ast.Expression
-	infixParseFn  func(ast.Expression) ast.Expression
+	// argument: the left side of the infix operator that's being parsed
+	infixParseFn func(ast.Expression) ast.Expression
 )
 
 type Parser struct {
@@ -40,6 +45,7 @@ func New(l *lexer.Lexer) *Parser {
 
 	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
 	p.registerPrefix(token.IDENT, p.parseIdentifier)
+	p.registerPrefix(token.INT, p.parseIntegerLiteral)
 
 	p.nextToken()
 	p.nextToken()
@@ -176,4 +182,19 @@ func (p *Parser) parseIdentifier() ast.Expression {
 		Token: p.curToken,
 		Value: p.curToken.Literal,
 	}
+}
+
+func (p *Parser) parseIntegerLiteral() ast.Expression {
+	lit := &ast.IntegerLiteral{Token: p.curToken}
+
+	value, err := strconv.ParseInt(p.curToken.Literal, 0, 64)
+	if err != nil {
+		msg := fmt.Sprintf("could not parse %q as interget", p.curToken.Literal)
+		p.errors = append(p.errors, msg)
+		return nil
+	}
+
+	lit.Value = value
+
+	return lit
 }
