@@ -10,3 +10,17 @@ Just for fun!
 * [ ] compilation
 * [ ] use `chan` to improve performance
 
+#### The heart of the parser
+
+```go
+for !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
+    infix := p.infixParseFns[p.peekToken.Type]
+    if infix == nil {
+        return leftExp
+    }
+
+    p.nextToken()
+    leftExp = infix(leftExp)
+}
+```
+
