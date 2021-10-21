@@ -5,8 +5,8 @@ Just for fun!
 #### TODO List
 
 * [x] lexer
-* [ ] parser
-* [ ] evaluation
+* [x] parser
+* [ ] evaluator
 * [ ] compilation
 * [ ] use `chan` to improve performance
 

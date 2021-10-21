@@ -226,7 +226,7 @@ func (ife *IfExpression) String() string {
 	out.WriteString(ife.Consequence.String())
 
 	if ife.Alternative != nil {
-		out.WriteString("else ")
+		out.WriteString(" else ")
 		out.WriteString(ife.Alternative.String())
 	}
 
