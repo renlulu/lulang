@@ -1,10 +1,12 @@
 package evaluator
 
 import (
+	"fmt"
 	"lulang/lexer"
 	"lulang/object"
 	"lulang/parser"
 	"testing"
+	"time"
 )
 
 func TestEvalIntegerExpression(t *testing.T) {
@@ -282,4 +284,23 @@ func TestFunctionApplication(t *testing.T) {
 	for _, tt := range tests {
 		testIntegerObject(t, testEval(tt.input), tt.expected)
 	}
+}
+
+func TestEval(t *testing.T) {
+	start := time.Now()
+	input := `
+			let f = fn(x) {
+				if (x < 1) {
+					return 0;
+				} else {
+					return x + f(x-1);
+				}
+			}
+			f(100000)
+	`
+	r := testEval(input)
+	end := time.Now()
+	duration := end.Sub(start).Seconds()
+	fmt.Println(r.Inspect())
+	fmt.Printf("duration = %f\n", duration)
 }
