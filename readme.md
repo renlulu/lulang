@@ -6,7 +6,8 @@ Just for fun!
 
 * [x] lexer
 * [x] parser
-* [ ] evaluator
+* [x] evaluator
+* [ ] extending
 * [ ] compilation
 * [ ] use `chan` to improve performance
 
