@@ -8,6 +8,7 @@ Just for fun!
 * [x] parser
 * [x] evaluator
 * [ ] builtins
+* [ ] bytecode
 * [ ] compilation
 * [ ] use `chan` to improve performance
 
