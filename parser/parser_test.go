@@ -646,21 +646,21 @@ func TestParsingArrayLiterals(t *testing.T) {
 	l := lexer.New(input)
 	p := New(l)
 	program := p.ParseProgram()
-	checkParseErrors(t,p)
+	checkParseErrors(t, p)
 
 	stmt := program.Statements[0].(*ast.ExpressionStatement)
-	array,ok := stmt.Expression.(*ast.ArrayLiteral)
+	array, ok := stmt.Expression.(*ast.ArrayLiteral)
 	if !ok {
-		t.Fatalf("exp not ast.ArrayLiteral. got=%T",stmt.Expression)
+		t.Fatalf("exp not ast.ArrayLiteral. got=%T", stmt.Expression)
 	}
 
 	if len(array.Elements) != 3 {
-		t.Fatalf("len(array.Elements) not 3. got=%d",len(array.Elements))
+		t.Fatalf("len(array.Elements) not 3. got=%d", len(array.Elements))
 	}
 
-	testIntegerLiteral(t,array.Elements[0],1)
-	testInfixExpression(t,array.Elements[1],2,"*",2)
-	testInfixExpression(t,array.Elements[2],3,"+",3)
+	testIntegerLiteral(t, array.Elements[0], 1)
+	testInfixExpression(t, array.Elements[1], 2, "*", 2)
+	testInfixExpression(t, array.Elements[2], 3, "+", 3)
 }
 
 func testInfixExpression(t *testing.T, exp ast.Expression, left interface{}, operator string, right interface{}) bool {
