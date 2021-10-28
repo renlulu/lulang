@@ -3,6 +3,7 @@ package object
 import (
 	"bytes"
 	"fmt"
+	"hash/fnv"
 	"lulang/ast"
 	"strings"
 )
@@ -18,6 +19,8 @@ const (
 	FUNCTION_OBJ     = "FUNCTION"
 	STRING_OBJ       = "STRING"
 	BUILTIN_OBJ      = "BUILTIN"
+	ARRAY_OBJ        = "ARRAY"
+	MAP_OBJ          = "MAP"
 )
 
 type Obejct interface {
@@ -136,4 +139,92 @@ func (s *String) Type() ObjectType {
 
 func (s *String) Inspect() string {
 	return s.Value
+}
+
+type Array struct {
+	Elements []Obejct
+}
+
+func (a *Array) Type() ObjectType {
+	return ARRAY_OBJ
+}
+
+func (a *Array) Inspect() string {
+	var out bytes.Buffer
+
+	var elements []string
+	for _, e := range a.Elements {
+		elements = append(elements, e.Inspect())
+	}
+
+	out.WriteString("[")
+	out.WriteString(strings.Join(elements, ", "))
+	out.WriteString("]")
+
+	return out.String()
+}
+
+type HashKey struct {
+	Type  ObjectType
+	Value uint64
+}
+
+func (b *Boolean) HashKey() HashKey {
+	var value uint64
+	if b.Value {
+		value = 1
+	} else {
+		value = 0
+	}
+
+	return HashKey{
+		Type:  b.Type(),
+		Value: value,
+	}
+}
+
+func (i *Integer) HashKey() HashKey {
+	return HashKey{
+		Type:  i.Type(),
+		Value: uint64(i.Value),
+	}
+}
+
+type Hashable interface {
+	HashKey() HashKey
+}
+
+func (s *String) HashKey() HashKey {
+	h := fnv.New64a()
+	h.Write([]byte(s.Value))
+	return HashKey{Type: s.Type(), Value: h.Sum64()}
+}
+
+type Pair struct {
+	Key   Obejct
+	Value Obejct
+}
+
+type Map struct {
+	Pairs map[HashKey]Pair
+}
+
+func (m *Map) Type() ObjectType {
+	return MAP_OBJ
+}
+
+func (m *Map) Inspect() string {
+	var out bytes.Buffer
+
+	var pairs []string
+
+	for _, pair := range m.Pairs {
+		pairs = append(pairs, fmt.Sprintf("%s: %s", pair.Key.Inspect(), pair.Value.Inspect()))
+	}
+
+	out.WriteString("{")
+	out.WriteString(strings.Join(pairs, ", "))
+	out.WriteString("}")
+
+	return out.String()
 }

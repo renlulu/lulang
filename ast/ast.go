@@ -345,3 +345,53 @@ func (al *ArrayLiteral) String() string {
 
 	return out.String()
 }
+
+type IndexExpression struct {
+	Token token.Token // [
+	Left  Expression
+	Index Expression
+}
+
+func (ie *IndexExpression) expressionNode() {}
+
+func (ie *IndexExpression) TokenLiteral() string {
+	return ie.Token.Literal
+}
+
+func (ie *IndexExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	out.WriteString(ie.Left.String())
+	out.WriteString("[")
+	out.WriteString(ie.Index.String())
+	out.WriteString("])")
+
+	return out.String()
+}
+
+type MapLiteral struct {
+	Token token.Token //{
+	Pairs map[Expression]Expression
+}
+
+func (m *MapLiteral) expressionNode() {}
+
+func (m *MapLiteral) TokenLiteral() string {
+	return m.Token.Literal
+}
+
+func (m *MapLiteral) String() string {
+	var out bytes.Buffer
+
+	var pairs []string
+	for key, value := range m.Pairs {
+		pairs = append(pairs, key.String()+":"+value.String())
+	}
+
+	out.WriteString("{")
+	out.WriteString(strings.Join(pairs, ", "))
+	out.WriteString("}")
+
+	return out.String()
+}

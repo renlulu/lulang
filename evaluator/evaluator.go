@@ -22,6 +22,8 @@ var builtins = map[string]*object.Builtin{
 			switch arg := args[0].(type) {
 			case *object.String:
 				return &object.Integer{Value: int64(len(arg.Value))}
+			case *object.Array:
+				return &object.Integer{Value: int64(len(arg.Elements))}
 			default:
 				return newError("argument to `len` not supported, got %s",
 					args[0].Type())
@@ -92,6 +94,27 @@ func Eval(node ast.Node, env *object.Environment) object.Obejct {
 			return args[0]
 		}
 		return applyFunction(function, args)
+	case *ast.ArrayLiteral:
+		elements := evalExpression(node.Elements, env)
+		if len(elements) == 1 && isError(elements[0]) {
+			return elements[0]
+		}
+		return &object.Array{
+			Elements: elements,
+		}
+	case *ast.IndexExpression:
+		left := Eval(node.Left, env)
+		if isError(left) {
+			return left
+		}
+		index := Eval(node.Index, env)
+		if isError(index) {
+			return index
+		}
+
+		return evalIndexExpression(left, index)
+	case *ast.MapLiteral:
+		return evalMapLiteral(node, env)
 	}
 
 	return nil
@@ -271,6 +294,76 @@ func evalIfExpression(ie *ast.IfExpression, env *object.Environment) object.Obej
 		return Eval(ie.Alternative, env)
 	} else {
 		return NULL
+	}
+}
+
+func evalIndexExpression(left, index object.Obejct) object.Obejct {
+	switch {
+	case left.Type() == object.ARRAY_OBJ && index.Type() == object.INTEGER_OBJ:
+		return evalArrayIndexExpression(left, index)
+	case left.Type() == object.MAP_OBJ:
+		return evalMapIndexExpression(left, index)
+	default:
+		return newError("index operator not supported: %s", left.Type())
+	}
+}
+
+func evalMapIndexExpression(hash, index object.Obejct) object.Obejct {
+	m := hash.(*object.Map)
+
+	key, ok := index.(object.Hashable)
+	if !ok {
+		return newError("unusable as hash key: %s", index.Type())
+	}
+
+	pair, ok := m.Pairs[key.HashKey()]
+	if !ok {
+		return NULL
+	}
+
+	return pair.Value
+}
+
+func evalArrayIndexExpression(array, index object.Obejct) object.Obejct {
+	arrayObject := array.(*object.Array)
+	i := index.(*object.Integer).Value
+
+	max := int64(len(arrayObject.Elements) - 1)
+	if i < 0 || i > max {
+		return NULL
+	}
+
+	return arrayObject.Elements[i]
+
+}
+
+func evalMapLiteral(node *ast.MapLiteral, env *object.Environment) object.Obejct {
+	pairs := make(map[object.HashKey]object.Pair)
+
+	for keyNode, valueNode := range node.Pairs {
+		key := Eval(keyNode, env)
+		if isError(key) {
+			return key
+		}
+
+		hashKey, ok := key.(object.Hashable)
+		if !ok {
+			return newError("unusable as hash key: %s", key.Type())
+		}
+
+		value := Eval(valueNode, env)
+		if isError(value) {
+			return value
+		}
+
+		pairs[hashKey.HashKey()] = object.Pair{
+			Key:   key,
+			Value: value,
+		}
+	}
+
+	return &object.Map{
+		Pairs: pairs,
 	}
 }
 

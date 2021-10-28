@@ -7,7 +7,7 @@ Just for fun!
 * [x] lexer
 * [x] parser
 * [x] evaluator
-* [ ] builtins
+* [x] builtins
 * [ ] bytecode
 * [ ] compilation
 * [ ] use `chan` to improve performance

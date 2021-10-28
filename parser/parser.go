@@ -19,6 +19,7 @@ const (
 	PRODUCT     // *
 	PREFIX      // -X PR !X
 	CALL        // myFunction(X)
+	INDEX       // array[index]
 )
 
 type (
@@ -39,6 +40,7 @@ var precedences = map[token.TokenType]int{
 	token.SLASH:    PRODUCT,
 	token.ASTERISK: PRODUCT,
 	token.LPAREN:   CALL,
+	token.LBRACKET: INDEX,
 }
 
 type Parser struct {
@@ -68,6 +70,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.FUNCTION, p.parseFunctionLiteral)
 	p.registerPrefix(token.STRING, p.parseStringLiteral)
 	p.registerPrefix(token.LBRACKET, p.parseArrayLiteral)
+	p.registerPrefix(token.LBRACE, p.parseMapLiteral)
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.registerInfix(token.PLUS, p.parseInfixExpression)
@@ -79,6 +82,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.LT, p.parseInfixExpression)
 	p.registerInfix(token.GT, p.parseInfixExpression)
 	p.registerInfix(token.LPAREN, p.parseCallExpression)
+	p.registerInfix(token.LBRACKET, p.parseIndexExpression)
 
 	p.nextToken()
 	p.nextToken()
@@ -345,6 +349,59 @@ func (p *Parser) parseGroupedExpression() ast.Expression {
 	p.nextToken()
 
 	return exp
+}
+
+func (p *Parser) parseIndexExpression(left ast.Expression) ast.Expression {
+	exp := &ast.IndexExpression{
+		Token: p.curToken,
+		Left:  left,
+	}
+
+	p.nextToken()
+
+	exp.Index = p.parseExpression(LOWEST)
+	if !p.peekTokenIs(token.RBRACKET) {
+		return nil
+	}
+	p.nextToken()
+
+	return exp
+}
+
+func (p *Parser) parseMapLiteral() ast.Expression {
+	m := &ast.MapLiteral{Token: p.curToken}
+	m.Pairs = make(map[ast.Expression]ast.Expression)
+
+	for !p.peekTokenIs(token.RBRACE) {
+		p.nextToken()
+		key := p.parseExpression(LOWEST)
+
+		if !p.peekTokenIs(token.COLON) {
+			return nil
+		}
+		p.nextToken()
+
+		p.nextToken()
+		value := p.parseExpression(LOWEST)
+
+		m.Pairs[key] = value
+
+		// if next token is not }, then it should be ; else error
+		if !p.peekTokenIs(token.RBRACE) {
+			if p.peekTokenIs(token.COMMA) {
+				p.nextToken()
+			} else {
+				return nil
+			}
+		}
+	}
+
+	if !p.peekTokenIs(token.RBRACE) {
+		return nil
+	}
+	p.nextToken()
+
+	return m
 }
 
 func (p *Parser) parseIfExpression() ast.Expression {

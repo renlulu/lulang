@@ -29,6 +29,7 @@ if (5 < 10) {
 "foobar"
 "foo bar"
 [1,2];
+{"key": "value" }
 `
 	l := New(input)
 
@@ -123,6 +124,12 @@ if (5 < 10) {
 		{token.INT, "2"},
 		{token.RBRACKET, "]"},
 		{token.SEMICOLON, ";"},
+
+		{token.LBRACE, "{"},
+		{token.STRING, "key"},
+		{token.COLON, ":"},
+		{token.STRING, "value"},
+		{token.RBRACE, "}"},
 
 		{token.EOF, ""},
 	}
