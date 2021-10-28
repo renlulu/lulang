@@ -10,7 +10,6 @@ Just for fun!
 * [x] builtins
 * [ ] bytecode
 * [ ] compilation
-* [ ] use `chan` to improve performance
 
 #### The heart of the parser
 

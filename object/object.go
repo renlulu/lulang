@@ -23,7 +23,7 @@ const (
 	MAP_OBJ          = "MAP"
 )
 
-type Obejct interface {
+type Object interface {
 	Type() ObjectType
 	Inspect() string
 }
@@ -32,7 +32,7 @@ type Integer struct {
 	Value int64
 }
 
-type BuiltinFunction func(args ...Obejct) Obejct
+type BuiltinFunction func(args ...Object) Object
 
 type Builtin struct {
 	Fn BuiltinFunction
@@ -78,7 +78,7 @@ func (n *Null) Inspect() string {
 }
 
 type ReturnValue struct {
-	Value Obejct
+	Value Object
 }
 
 func (rv *ReturnValue) Type() ObjectType {
@@ -142,7 +142,7 @@ func (s *String) Inspect() string {
 }
 
 type Array struct {
-	Elements []Obejct
+	Elements []Object
 }
 
 func (a *Array) Type() ObjectType {
@@ -201,8 +201,8 @@ func (s *String) HashKey() HashKey {
 }
 
 type Pair struct {
-	Key   Obejct
-	Value Obejct
+	Key   Object
+	Value Object
 }
 
 type Map struct {

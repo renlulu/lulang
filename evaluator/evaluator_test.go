@@ -175,14 +175,14 @@ func TestLetStatements(t *testing.T) {
 	}
 }
 
-func testEval(input string) object.Obejct {
+func testEval(input string) object.Object {
 	l := lexer.New(input)
 	p := parser.New(l)
 	env := object.NewEnvironment()
 	return Eval(p.ParseProgram(), env)
 }
 
-func testIntegerObject(t *testing.T, obj object.Obejct, expected int64) bool {
+func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 	result, ok := obj.(*object.Integer)
 	if !ok {
 		t.Errorf("object is not Integer. got=%T (%+v)", obj, obj)
@@ -266,7 +266,7 @@ func TestEvalBooleanExpression(t *testing.T) {
 	}
 }
 
-func testBooleanObject(t *testing.T, obj object.Obejct, expected bool) bool {
+func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 	result, ok := obj.(*object.Boolean)
 	if !ok {
 		t.Errorf("object is not Boolean. go=%T (%+v)", obj, obj)
