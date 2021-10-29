@@ -25,7 +25,13 @@ for !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
 }
 ```
 
+#### Major Parts
+
+1. string -> tokens -> ast -> objects (lexer -> parser -> evaluator)
+2. string -> tokens -> ast -> bytecode -> objects (lexer -> parser -> compiler -> vm)
+
 #### Referring
 
 [Top Down Operator Precedence](https://tdop.github.io/)
+[Von Neumann architecture](https://en.wikipedia.org/wiki/Von_Neumann_architecture)
 
