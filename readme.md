@@ -30,6 +30,11 @@ for !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
 1. string -> tokens -> ast -> objects (lexer -> parser -> evaluator)
 2. string -> tokens -> ast -> bytecode -> objects (lexer -> parser -> compiler -> vm)
 
+#### OpCode
+
+1. OpConstant
+2. OpAdd
+
 #### Referring
 
 [Top Down Operator Precedence](https://tdop.github.io/)
