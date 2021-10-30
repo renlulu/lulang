@@ -1,6 +1,7 @@
 package complier
 
 import (
+	"fmt"
 	"lulang/ast"
 	"lulang/code"
 	"lulang/object"
@@ -45,6 +46,13 @@ func (c *Compiler) Compile(node ast.Node) error {
 		err = c.Compile(node.Right)
 		if err != nil {
 			return err
+		}
+
+		switch node.Operator {
+		case "+":
+			c.emit(code.OpAdd)
+		default:
+			return fmt.Errorf("unknow operator %s", node.Operator)
 		}
 	case *ast.IntegerLiteral:
 		integer := &object.Integer{

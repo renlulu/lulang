@@ -13,6 +13,7 @@ type Opcode byte
 const (
 	// OpConstant it has one operand, the number assigned to the constant
 	OpConstant Opcode = iota
+	OpAdd
 )
 
 type Definition struct {
@@ -24,6 +25,7 @@ type Definition struct {
 var definitions = map[Opcode]*Definition{
 	// 2bytes: uint16
 	OpConstant: {"OpConstant", []int{2}},
+	OpAdd:      {"OpAdd", []int{}},
 }
 
 func Lookup(op byte) (*Definition, error) {
@@ -77,6 +79,10 @@ func ReadOperands(def *Definition, ins Instructions) ([]int, int) {
 	return operands, offset
 }
 
+func ReadUint16(ins Instructions) uint16 {
+	return binary.BigEndian.Uint16(ins)
+}
+
 func (ins Instructions) String() string {
 	var out bytes.Buffer
 
@@ -105,6 +111,8 @@ func (ins Instructions) fmtInstruction(def *Definition, operands []int) string {
 	}
 
 	switch operandCount {
+	case 0:
+		return def.Name
 	case 1:
 		return fmt.Sprintf("%s %d", def.Name, operands[0])
 	}

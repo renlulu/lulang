@@ -10,6 +10,7 @@ func TestMake(t *testing.T) {
 	}{
 		// ff fe
 		{OpConstant, []int{65534}, []byte{byte(OpConstant), 255, 254}},
+		{OpAdd, []int{}, []byte{byte(OpAdd)}},
 	}
 	for _, tt := range tests {
 		instruction := Make(tt.op, tt.operands...)
