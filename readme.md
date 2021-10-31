@@ -23,7 +23,7 @@ Just for fun!
 lulang interpreter
 ```
 
-### Run Compiler
+#### Run Compiler
 
 ```shell
 lulang compile -s <source_file>
