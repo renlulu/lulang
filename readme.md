@@ -17,10 +17,16 @@ Just for fun!
 ./install.sh
 ```
 
-#### Run interpreter
+#### Run Interpreter
 
 ```shell
 lulang interpreter
+```
+
+### Run Compiler
+
+```shell
+lulang compile -s <source_file>
 ```
 
 #### The heart of the parser
