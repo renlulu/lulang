@@ -11,6 +11,18 @@ Just for fun!
 * [ ] bytecode
 * [ ] compilation
 
+#### Install
+
+```shell
+./install.sh
+```
+
+#### Run interpreter
+
+```shell
+lulang interpreter
+```
+
 #### The heart of the parser
 
 ```go
