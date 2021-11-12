@@ -51,3 +51,24 @@ func TestReadOperands(t *testing.T) {
 		}
 	}
 }
+
+func TestInstructionsString(t *testing.T) {
+	instructions := []Instructions{
+		Make(OpConstant, 1),
+		Make(OpConstant, 2),
+		Make(OpConstant, 65535),
+	}
+	expected := `0000 OpConstant 1
+0003 OpConstant 2
+0006 OpConstant 65535
+`
+	contacted := Instructions{}
+	for _, ins := range instructions {
+		contacted = append(contacted, ins...)
+	}
+	if contacted.String() != expected {
+		t.Errorf("instructions wrongly formatted.\nwant=%q\ngot=%q",
+			expected, contacted.String())
+
+	}
+}

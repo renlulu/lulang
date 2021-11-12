@@ -18,7 +18,7 @@ const (
 
 type Definition struct {
 	Name string
-	// optional, numbers of bytes each operand takes up
+	// numbers of bytes each operand takes up
 	OperandWidths []int
 }
 
